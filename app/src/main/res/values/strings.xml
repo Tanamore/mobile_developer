@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">MyTanamore</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="halaman_penyakit">Scan Penyakit Tanaman</string>
+    <string name="halaman_scan_tanaman">Scan Jenis Tanaman</string>
+    <string name="halaman_ensiklopdia">Ensiklopedia</string>
+    <string name="page_detail_penyakit">Detail Penyakit</string>
+    <string name="page_detail_tanaman">Detail Tanaman</string>
+    <string name="page_detail_ensiklopdia">Detail Ensiklopedia</string>
+
+    <string name="deskripsi_back">Tombol Kembali</string>
+    <string name="deskripsi_galeri">Tombol Tambah dari Galeri</string>
+    <string name="deskripsi_shutter">Tombol Ambil Gambar</string>
+    <string name="deskripsi_analyze">Tombol Mulai analisis</string>
+    <string name="deskripsi_preview">Preview Kamera</string>
+    <string name="deskripsi_camera">Tombol Scan Tanaman</string>
+    <string name="deskripsi_search">Tombol Cari</string>
+    <string name="deskripsi_list">Ini adalah list ensiklopedia tanaman</string>
+    <string name="deskripsi_image_preview">Gambar yang ditampilkan</string>"
+
+    <string name="search_ensiklopedia">Cari tanaman yang Anda inginkan</string>
+</resources>
