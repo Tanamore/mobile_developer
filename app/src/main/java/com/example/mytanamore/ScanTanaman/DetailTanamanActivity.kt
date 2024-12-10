@@ -1,7 +1,9 @@
 package com.example.mytanamore.ScanTanaman
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -25,18 +27,20 @@ class DetailTanamanActivity : AppCompatActivity() {
 
         val result = intent.getStringExtra("ANALYSIS_RESULT")
         val confidence = intent.getStringExtra("CONFIDENCE")
+        val imageUrl = intent.getStringExtra("IMAGE_URL")
         val plantInfo: PlantInfo? = intent.getParcelableExtra("PLANT_INFO")
 
-        // Menampilkan hasil analisis
+        imageUrl?.let {
+            Glide.with(this)
+                .load(Uri.parse(it))
+                .placeholder(R.drawable.ic_placeholder)
+                .into(binding.analyzedImage)
+        }
+
         binding.tvResult.text = result ?: "No result"
         binding.tvConfidence.text = "Confidence: $confidence"
 
-        // Memeriksa dan menampilkan informasi tanaman jika tersedia
         plantInfo?.let {
-            Glide.with(this)
-                .load(it.imageUrl)
-                .placeholder(R.drawable.ic_placeholder)
-                .into(binding.analyzedImage)
             binding.tvPlantName.text = it.plantName ?: "Unknown Plant"
             binding.tvScientificName.text = "Scientific Name: ${it.scientificName ?: "N/A"}"
             binding.tvOriginPlace.text = "Origin: ${it.originPlace ?: "Unknown"}"
@@ -47,9 +51,15 @@ class DetailTanamanActivity : AppCompatActivity() {
             binding.tvPlantName.text = "No plant information"
         }
 
-        // Tombol kembali
         binding.icBack.setOnClickListener {
             onBackPressed()
         }
+    }
+
+    override fun onBackPressed() {
+        val intent = Intent(this, ScanTanamanActivity::class.java)
+        startActivity(intent)
+        finish()
+        super.onBackPressed()
     }
 }

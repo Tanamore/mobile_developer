@@ -3,6 +3,9 @@ package com.example.mytanamore.ScanTanaman
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.hardware.Camera
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -31,6 +34,7 @@ import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 
@@ -115,7 +119,8 @@ class ScanTanamanActivity : AppCompatActivity() {
                 ContextCompat.getMainExecutor(this),
                 object : ImageCapture.OnImageSavedCallback {
                     override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                        val uri = Uri.fromFile(file)
+                        val compressedFile = compressImage(file)
+                        val uri = Uri.fromFile(compressedFile)
                         viewModel.setImageUri(uri)
                     }
 
@@ -127,6 +132,26 @@ class ScanTanamanActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this, "Camera permission is required to take a photo", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun compressImage(file: File): File {
+        val bitmap = BitmapFactory.decodeFile(file.absolutePath)
+        val outputStream = ByteArrayOutputStream()
+        var quality = 100
+
+        do {
+            outputStream.reset()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+            quality -= 5
+        } while (outputStream.size() > 3 * 1024 * 1024 && quality > 10)
+
+        val compressedFile = File(file.parent, "${System.currentTimeMillis()}_compressed.jpg")
+        val compressedOutputStream = FileOutputStream(compressedFile)
+        compressedOutputStream.write(outputStream.toByteArray())
+        compressedOutputStream.flush()
+        compressedOutputStream.close()
+
+        return compressedFile
     }
 
     private fun openGallery() {
@@ -146,9 +171,11 @@ class ScanTanamanActivity : AppCompatActivity() {
             return
         }
 
+        val compressedFile = if (uri.scheme == "file") compressImage(file) else file
+
         val apiService = ApiConfig.getApiService()
-        val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
-        val imagePart = MultipartBody.Part.createFormData("image", file.name, requestBody)
+        val requestBody = compressedFile.asRequestBody("image/*".toMediaTypeOrNull())
+        val imagePart = MultipartBody.Part.createFormData("image", compressedFile.name, requestBody)
 
         lifecycleScope.launch {
             try {
@@ -159,22 +186,17 @@ class ScanTanamanActivity : AppCompatActivity() {
                 if (response.isSuccessful && response.body() != null) {
                     val predictEnsiklopediaResponse = response.body()
 
-                    // Log the entire response for debugging
-                    Log.d("AnalyzeImage", "Response: ${predictEnsiklopediaResponse?.data}")
-
-                    // Extract the necessary data from the response
                     val result = predictEnsiklopediaResponse?.data?.result ?: "No result"
                     val confidence = predictEnsiklopediaResponse?.data?.confidence ?: "Unknown confidence"
+                    val imageUrl = predictEnsiklopediaResponse?.data?.imageUrl ?: ""
                     val plantInfo = predictEnsiklopediaResponse?.data?.plantInfo
 
-                    // Log or check the values
-                    Log.d("AnalyzeImage", "Result: $result, Confidence: $confidence, PlantInfo: $plantInfo")
-
                     val intent = Intent(this@ScanTanamanActivity, DetailTanamanActivity::class.java).apply {
-                        intent.putExtra("ANALYSIS_RESULT", result)
-                        intent.putExtra("CONFIDENCE", confidence)
+                        putExtra("ANALYSIS_RESULT", result)
+                        putExtra("CONFIDENCE", confidence)
+                        putExtra("IMAGE_URL", imageUrl)
                         plantInfo?.let {
-                            intent.putExtra("PLANT_INFO", it)
+                            putExtra("PLANT_INFO", it)
                         }
                     }
                     startActivity(intent)
@@ -213,6 +235,14 @@ class ScanTanamanActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "Camera permission is required to use the camera", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (::imageCapture.isInitialized) {
+            setupCamera()
         }
     }
 }

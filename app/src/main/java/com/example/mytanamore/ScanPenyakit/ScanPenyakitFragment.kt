@@ -3,6 +3,8 @@ package com.example.mytanamore.ScanPenyakit
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -29,6 +31,7 @@ import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 
@@ -133,6 +136,27 @@ class ScanPenyakitFragment : Fragment() {
         }
     }
 
+    private fun compressImage(file: File): File {
+
+        val bitmap = BitmapFactory.decodeFile(file.absolutePath)
+        val outputStream = ByteArrayOutputStream()
+        var quality = 100
+
+        do {
+            outputStream.reset()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+            quality -= 5
+        } while (outputStream.size() > 3 * 1024 * 1024 && quality > 10)
+
+        val compressedFile = File(file.parent, "${System.currentTimeMillis()}_compressed.jpg")
+        val compressedOutputStream = FileOutputStream(compressedFile)
+        compressedOutputStream.write(outputStream.toByteArray())
+        compressedOutputStream.flush()
+        compressedOutputStream.close()
+
+        return compressedFile
+    }
+
     private fun openGallery() {
         galleryLauncher.launch("image/*")
     }
@@ -150,9 +174,11 @@ class ScanPenyakitFragment : Fragment() {
             return
         }
 
+        val compressedFile = compressImage(file)
+
         val apiService = ApiConfig.getApiService()
-        val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
-        val imagePart = MultipartBody.Part.createFormData("image", file.name, requestBody)
+        val requestBody = compressedFile.asRequestBody("image/*".toMediaTypeOrNull())
+        val imagePart = MultipartBody.Part.createFormData("image", compressedFile.name, requestBody)
 
         lifecycleScope.launch {
             try {
@@ -161,21 +187,16 @@ class ScanPenyakitFragment : Fragment() {
                 binding.progressBar.visibility = View.GONE
 
                 if (response.isSuccessful && response.body() != null) {
-                    val deteksiPenyakitResponse = response.body() // Response with DeteksiPenyakitResponse
+                    val deteksiPenyakitResponse = response.body()
 
-                    // Extract the necessary data from the response
                     val result = deteksiPenyakitResponse?.data?.result ?: "No result"
                     val confidence = deteksiPenyakitResponse?.data?.confidence ?: "Unknown confidence"
                     val diseaseInfo = deteksiPenyakitResponse?.data?.diseaseInfo
 
-                    // Log or check the values
-                    Log.d("AnalyzeImage", "Result: $result, Confidence: $confidence")
-
-                    // Create intent to pass data to the next activity
                     val intent = Intent(requireContext(), DetailPenyakitActivity::class.java).apply {
                         putExtra("ANALYSIS_RESULT", result)
                         putExtra("CONFIDENCE", confidence)
-                        putExtra("DISEASE_INFO", diseaseInfo) // Passing Parcelable DiseaseInfo
+                        putExtra("DISEASE_INFO", diseaseInfo)
                         putExtra("IMAGE_URI", uri.toString())
                     }
                     startActivity(intent)
@@ -214,6 +235,14 @@ class ScanPenyakitFragment : Fragment() {
             } else {
                 Toast.makeText(requireContext(), "Camera permission is required to use the camera", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (::imageCapture.isInitialized) {
+            setupCamera()
         }
     }
 }

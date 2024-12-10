@@ -14,7 +14,6 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:layout_margin="16dp"
-        app:layout_constraintBottom_toTopOf="@id/analyzedImage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -34,101 +33,103 @@
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:text="@string/page_detail_tanaman"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textAppearance="@style/tittle_green"
             android:gravity="center_horizontal" />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/analyzedImage"
+    <!-- Bungkus elemen di bawah headerLayout dengan NestedScrollView -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/headerLayout"
-        app:layout_constraintBottom_toTopOf="@id/deskripsiLayout"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:contentDescription="Preview Image"
-        app:srcCompat="@drawable/ic_placeholder" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <LinearLayout
-        android:id="@+id/deskripsiLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_margin="16dp"
-        app:layout_constraintTop_toBottomOf="@id/analyzedImage"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <TextView
-            android:id="@+id/tvPlantName"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:background="@color/secondary_green"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:paddingBottom="8dp" />
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <TextView
-            android:id="@+id/tvResult"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/secondary_yellow"
-            android:padding="16dp"
-            android:paddingBottom="8dp" />
+            <ImageView
+                android:id="@+id/analyzedImage"
+                android:layout_width="300dp"
+                android:layout_height="500dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/deskripsi_preview"
+                app:srcCompat="@drawable/ic_placeholder" />
 
-        <TextView
-            android:id="@+id/tvConfidence"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/secondary_yellow"
-            android:padding="16dp"
-            android:paddingBottom="8dp" />
+            <LinearLayout
+                android:id="@+id/deskripsiLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="16dp">
 
-        <TextView
-            android:id="@+id/tvScientificName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/secondary_yellow"
-            android:padding="16dp"
-            android:paddingBottom="8dp" />
+                <TextView
+                    android:id="@+id/tvPlantName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:background="@color/primary_green"
+                    android:textAppearance="@style/tittle_white" />
 
-        <TextView
-            android:id="@+id/tvOriginPlace"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/secondary_yellow"
-            android:padding="16dp"
-            android:paddingBottom="8dp" />
+                <TextView
+                    android:id="@+id/tvResult"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/secondary_yellow"
+                    android:padding="8dp" />
 
-        <TextView
-            android:id="@+id/tvClimate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/secondary_yellow"
-            android:padding="16dp"
-            android:paddingBottom="8dp" />
+                <TextView
+                    android:id="@+id/tvConfidence"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/secondary_yellow"
+                    android:padding="8dp" />
 
-        <TextView
-            android:id="@+id/tvCommonDisease"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/secondary_yellow"
-            android:padding="16dp"
-            android:paddingBottom="8dp" />
+                <TextView
+                    android:id="@+id/tvScientificName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/secondary_yellow"
+                    android:padding="8dp" />
 
-        <TextView
-            android:id="@+id/tvDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/secondary_yellow"
-            android:padding="16dp"
-            android:paddingBottom="8dp" />
+                <TextView
+                    android:id="@+id/tvOriginPlace"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/secondary_yellow"
+                    android:padding="8dp" />
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/tvClimate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/secondary_yellow"
+                    android:padding="8dp" />
+
+                <TextView
+                    android:id="@+id/tvCommonDisease"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/secondary_yellow"
+                    android:padding="8dp" />
+
+                <TextView
+                    android:id="@+id/tvDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/secondary_yellow"
+                    android:padding="8dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

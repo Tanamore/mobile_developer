@@ -35,7 +35,7 @@
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:text="@string/halaman_penyakit"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textAppearance="@style/tittle_green"
             android:gravity="center_horizontal" />
     </LinearLayout>
 

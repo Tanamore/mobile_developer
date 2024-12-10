@@ -1,5 +1,6 @@
 package com.example.mytanamore.ScanPenyakit
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
@@ -10,6 +11,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.example.mytanamore.R
+import com.example.mytanamore.ScanTanaman.ScanTanamanActivity
 import com.example.mytanamore.databinding.ActivityDetailPenyakitBinding
 import com.example.mytanamore.response.DiseaseInfo
 
@@ -27,7 +29,6 @@ class DetailPenyakitActivity : AppCompatActivity() {
         val diseaseInfo: DiseaseInfo? = intent.getParcelableExtra("DISEASE_INFO")
         val imageUri = intent.getStringExtra("IMAGE_URI")
 
-        // Memuat gambar jika URI valid
         imageUri?.let {
             Glide.with(this)
                 .load(Uri.parse(it))
@@ -36,9 +37,8 @@ class DetailPenyakitActivity : AppCompatActivity() {
         }
 
         binding.result.text = result ?: "No result"
-        binding.confidence.text = "Confidence: ${confidence ?: "N/A"}" // Menangani null dengan default "N/A"
+        binding.confidence.text = "Confidence: ${confidence ?: "N/A"}"
 
-        // Memuat data penyakit
         diseaseInfo?.let {
             binding.diseaseName.text = it.diseaseName ?: "Unknown Disease"
             binding.symptoms.text = "Gejala Penyakit: ${it.symptoms ?: "Tidak ada gejala"}"
@@ -50,7 +50,14 @@ class DetailPenyakitActivity : AppCompatActivity() {
         }
 
         binding.icBack.setOnClickListener {
-            finish()
+            onBackPressed()
         }
+    }
+
+    override fun onBackPressed() {
+        val intent = Intent(this, ScanPenyakitFragment::class.java)
+        startActivity(intent)
+        finish()
+        super.onBackPressed()
     }
 }

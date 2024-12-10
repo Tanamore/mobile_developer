@@ -46,17 +46,17 @@ data class DataItem(
 	@field:SerializedName("plant_id")
 	val plantId: String? = null,
 
-	@field:SerializedName("origin_place")
-	val originPlace: String? = null,
-
 	@field:SerializedName("image_url")
 	val imageUrl: String? = null,
+
+	@field:SerializedName("origin_place")
+	val originPlace: String? = null,
 
 	@field:SerializedName("description")
 	val description: String? = null,
 
 	@field:SerializedName("watering_time")
-	val wateringTime: Double? = null,
+	val wateringTime: String? = null,
 
 	@field:SerializedName("scientific_name")
 	val scientificName: String? = null,
@@ -77,7 +77,7 @@ data class DataItem(
 	val commonDisease: String? = null,
 
 	@field:SerializedName("harvest_time_days")
-	val harvestTimeDays: Double? = null,
+	val harvestTimeDays: String? = null,
 
 	@field:SerializedName("uses")
 	val uses: String? = null,

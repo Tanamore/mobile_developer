@@ -6,8 +6,8 @@ import kotlinx.parcelize.Parcelize
 
 data class PredictEnsiklopediaResponse(
 
-	@field:SerializedName("dataPredict")
-	val data: DataPredict? = null,
+	@field:SerializedName("data")
+	val data: DataPlant? = null,
 
 	@field:SerializedName("message")
 	val message: String? = null,
@@ -17,35 +17,22 @@ data class PredictEnsiklopediaResponse(
 )
 
 @Parcelize
-data class DataPredict(
-
-	@field:SerializedName("result")
-	val result: String? = null,
-
-	@field:SerializedName("confidence")
-	val confidence: String? = null,
-
-	@field:SerializedName("plantInfo")
-	val plantInfo: PlantInfo? = null
-) : Parcelable
-
-@Parcelize
 data class PlantInfo(
 
 	@field:SerializedName("plant_id")
 	val plantId: String? = null,
 
-	@field:SerializedName("origin_place")
-	val originPlace: String? = null,
-
 	@field:SerializedName("image_url")
 	val imageUrl: String? = null,
+
+	@field:SerializedName("origin_place")
+	val originPlace: String? = null,
 
 	@field:SerializedName("description")
 	val description: String? = null,
 
 	@field:SerializedName("watering_time")
-	val wateringTime: Double? = null,
+	val wateringTime: String? = null,
 
 	@field:SerializedName("scientific_name")
 	val scientificName: String? = null,
@@ -66,7 +53,7 @@ data class PlantInfo(
 	val commonDisease: String? = null,
 
 	@field:SerializedName("harvest_time_days")
-	val harvestTimeDays: Int? = null,
+	val harvestTimeDays: String? = null,
 
 	@field:SerializedName("uses")
 	val uses: String? = null,
@@ -76,4 +63,20 @@ data class PlantInfo(
 
 	@field:SerializedName("plant_name")
 	val plantName: String? = null
+) : Parcelable
+
+@Parcelize
+data class DataPlant(
+
+	@field:SerializedName("result")
+	val result: String? = null,
+
+	@field:SerializedName("confidence")
+	val confidence: String? = null,
+
+	@field:SerializedName("imageUrl")
+	val imageUrl: String? = null,
+
+	@field:SerializedName("plantInfo")
+	val plantInfo: PlantInfo? = null
 ) : Parcelable
